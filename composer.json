@@ -1,0 +1,8 @@
+{
+    "name": "alex/wc-hubspot-leads",
+    "autoload": {
+        "psr-4": {
+            "WCHubSpot\\": "src/"
+        }
+    }
+}
