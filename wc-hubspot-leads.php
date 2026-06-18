@@ -15,10 +15,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Include the main plugin class
 require_once __DIR__ . '/vendor/autoload.php';
 
+use WCHubSpot\Plugin;
 use WCHubSpot\Services\Logger;
+use WCHubSpot\Services\HubSpotClient;
 
 $logger = new Logger();
 
-$plugin = new WCHubSpot\Plugin($logger);
+$hubSpotClient = new HubSpotClient($logger);
+
+$plugin = new Plugin(
+    $logger,
+    $hubSpotClient
+);
 
 $plugin->init();
