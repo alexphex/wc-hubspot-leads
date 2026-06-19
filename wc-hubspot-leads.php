@@ -20,8 +20,9 @@ use WCHubSpot\Services\Logger;
 use WCHubSpot\Services\HubSpotClient;
 
 $logger = new Logger();
+$accessToken = 'demo-token'; // Replace with your actual HubSpot access token
 
-$hubSpotClient = new HubSpotClient($logger);
+$hubSpotClient = new HubSpotClient($logger, $accessToken);
 
 $plugin = new Plugin(
     $logger,
