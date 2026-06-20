@@ -20,13 +20,16 @@ class Plugin
 
     public function init(): void
     {
+
+        $leadData = [
+            'email' => 'john@example.com',
+            'first_name' => 'John',
+        ];
+
         $this->logger->log('Plugin loaded');
 
         try{
-            $this->hubSpotClient->sendLead([
-                'email' => 'john@example.com',
-                'first_name' => 'John',
-            ]);
+            $this->hubSpotClient->sendLead($leadData);
         } catch (\Exception $e){
             $this->logger->log("Error sending test lead: " . $e->getMessage());
         }

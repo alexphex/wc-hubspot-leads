@@ -3,6 +3,7 @@
 namespace WCHubSpot\Services;
 
 use WCHubSpot\Contracts\LoggerInterface;
+use WCHubSpot\Exceptions\HubSpotException;
 
 class HubSpotClient
 {
@@ -22,7 +23,7 @@ class HubSpotClient
         $json = wp_json_encode($leadData);
 
         if($json === false){
-            throw new \Exception("Failed to encode lead data to JSON: ");
+            throw new HubSpotException("Failed to encode lead data to JSON");
         }
 
         $response = wp_remote_post('https://api.hubapi.com/crm/v3/objects/contacts', [
@@ -35,17 +36,18 @@ class HubSpotClient
 
 
         if (is_wp_error($response)) {
-            throw new \Exception("HTTP request failed: " . $response->get_error_message());
+            throw new HubSpotException("HTTP request failed: " . $response->get_error_message());
         }
 
-        $this->logger->log("Sending lead data to HubSpot");
-        $this->logger->log("Lead data: " . $json);
-        $this->logger->log(
-            'Status code: ' . wp_remote_retrieve_response_code($response)
-        );
-        $this->logger->log(
-            "Response: " . wp_remote_retrieve_body($response)
-        );
+        $statusCode = wp_remote_retrieve_response_code($response);
+
+        if ($statusCode >= 400) {
+            throw new HubSpotException(
+                'HubSpot API returned status code: ' . $statusCode
+            );
+        }
+
+        $this->logger->log("Status Code: " . $statusCode);
 
     }
 }
