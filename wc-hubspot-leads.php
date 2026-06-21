@@ -7,26 +7,12 @@
  * License: GPL2
  */
 
-// Exit if accessed directly
-if ( ! defined( 'ABSPATH' ) ) {
+if (!defined('ABSPATH')) {
     exit;
-}  
+}
 
-// Include the main plugin class
 require_once __DIR__ . '/vendor/autoload.php';
 
-use WCHubSpot\Plugin;
-use WCHubSpot\Services\Logger;
-use WCHubSpot\Services\HubSpotClient;
+$bootstrap = new \WCHubSpot\Bootstrap();
 
-$logger = new Logger();
-$accessToken = 'demo-token'; // Replace with your actual HubSpot access token
-
-$hubSpotClient = new HubSpotClient($logger, $accessToken);
-
-$plugin = new Plugin(
-    $logger,
-    $hubSpotClient
-);
-
-$plugin->init();
+$bootstrap->run();
