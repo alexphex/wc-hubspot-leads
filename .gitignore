@@ -1,0 +1,36 @@
+# Composer dependencies
+/vendor/
+
+# Composer cache
+composer.phar
+
+# WordPress
+wp-config.php
+wp-content/uploads/
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+
+# Environment files
+.env
+.env.*
+
+# Node (если вдруг появится сборка)
+# node_modules/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Backup files
+*.bak
+*.old
