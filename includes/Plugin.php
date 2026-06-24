@@ -2,11 +2,21 @@
 
 namespace WCHubSpot;
 
-class Plugin {
-
-    public static function init()
+class Plugin
+{
+    public function run(): void
     {
-        error_log('Plugin started');
+        $logger = new Logger();
+
+        $logger->info('Plugin started');
+
+        $hubspotApi = new HubSpotAPI();
+
+        new SettingsPage();
+
+        new OrderListener(
+            $hubspotApi,
+            $logger
+        );
     }
-    
 }

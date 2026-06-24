@@ -1,13 +1,9 @@
 {
-    "name": "agency/wc-hubspot-leads",
-    "description": "WooCommerce HubSpot integration plugin",
+    "name": "alex/wc-hubspot-leads",
     "type": "wordpress-plugin",
-
     "autoload": {
         "psr-4": {
             "WCHubSpot\\": "includes/"
         }
-    },
-
-    "require": {}
+    }
 }
