@@ -4,39 +4,43 @@ namespace WCHubSpot;
 
 class HubSpotAPI
 {
-    /**
-     * TODO:
-     * Replace with real token.
-     */
-    private const ACCESS_TOKEN = 'PUT_HUBSPOT_TOKEN_HERE';
-
-    /**
-     * TODO:
-     * Replace if HubSpot API changes.
-     */
     private const API_URL =
         'https://api.hubapi.com/crm/v3/objects/contacts';
 
-    public function createContact(array $contact)
+    private string $token;
+
+    public function __construct()
     {
+        $this->token = get_option(
+            'wc_hubspot_token',
+            ''
+        );
+    }
+
+    public function createContact(array $contact): array|\WP_Error
+    {
+        if (empty($this->token)) {
+            return new \WP_Error(
+                'missing_token',
+                'HubSpot token is not configured.'
+            );
+        }
+
         $body = [
             'properties' => [
-                'email'     => $contact['email'],
-                'firstname' => $contact['firstname'],
-                'lastname'  => $contact['lastname'],
-                'phone'     => $contact['phone'],
-            ]
+                'email'     => $contact['email'] ?? '',
+                'firstname' => $contact['firstname'] ?? '',
+                'lastname'  => $contact['lastname'] ?? '',
+                'phone'     => $contact['phone'] ?? '',
+            ],
         ];
 
         return wp_remote_post(
             self::API_URL,
             [
                 'headers' => [
-                    'Authorization' =>
-                        'Bearer ' . self::ACCESS_TOKEN,
-
-                    'Content-Type' =>
-                        'application/json',
+                    'Authorization' => 'Bearer ' . $this->token,
+                    'Content-Type'  => 'application/json',
                 ],
 
                 'body' => wp_json_encode($body),
