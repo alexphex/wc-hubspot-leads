@@ -4,15 +4,16 @@ namespace WCHubSpot;
 
 class OrderListener
 {
-    private HubSpotAPI $hubspot;
+    private HubSpotAPI $hubSpotApi;
+
     private Logger $logger;
 
     public function __construct(
-        HubSpotAPI $hubspot,
+        HubSpotAPI $hubSpotApi,
         Logger $logger
     ) {
-        $this->hubspot = $hubspot;
-        $this->logger  = $logger;
+        $this->hubSpotApi = $hubSpotApi;
+        $this->logger = $logger;
 
         add_action(
             'woocommerce_checkout_order_processed',
@@ -22,34 +23,44 @@ class OrderListener
         );
     }
 
-    public function handleOrder(int $order_id): void
+    public function handleOrder(int $orderId): void
     {
-        $order = wc_get_order($order_id);
+        $order = wc_get_order($orderId);
 
         if (!$order) {
-            return;
-        }
-
-        $contact = [
-            'email'      => $order->get_billing_email(),
-            'firstname'  => $order->get_billing_first_name(),
-            'lastname'   => $order->get_billing_last_name(),
-            'phone'      => $order->get_billing_phone(),
-        ];
-
-        $result = $this->hubspot->createContact($contact);
-
-        if (is_wp_error($result)) {
-
             $this->logger->error(
-                'HubSpot error: ' . $result->get_error_message()
+                'Order not found: ' . $orderId
             );
 
             return;
         }
 
+        $contact = [
+            'email'     => $order->get_billing_email(),
+            'firstname' => $order->get_billing_first_name(),
+            'lastname'  => $order->get_billing_last_name(),
+            'phone'     => $order->get_billing_phone(),
+        ];
+
+        $response = $this->hubSpotApi->createContact(
+            $contact
+        );
+
+        if (is_wp_error($response)) {
+
+            $this->logger->error(
+                $response->get_error_message()
+            );
+
+            return;
+        }
+
+        $statusCode = wp_remote_retrieve_response_code(
+            $response
+        );
+
         $this->logger->info(
-            'Contact synced. Order #' . $order_id
+            'HubSpot response: ' . $statusCode
         );
     }
 }
